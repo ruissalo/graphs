@@ -28,8 +28,19 @@ def distance(adj, cost, s, t):
                 prev[element].append(u)
     if dist[t] == float("inf"):
         return(-1)
-    print(prev)
-    return dist[t]
+    return dist[t], prev
+
+def dfs_paths(graph, start, goal):
+    graph = {key:set(value) for key,value in graph.items()}
+    stack = [(start, [start])]
+    while stack:
+        (vertex, path) = stack.pop()
+        for next in graph[vertex] - set(path):
+            if next == goal:
+                yield path + [next]
+            else:
+                stack.append((next, path + [next]))
+
 
 if __name__ == '__main__':
     input = sys.stdin.read()
@@ -45,4 +56,6 @@ if __name__ == '__main__':
         adj[a - 1].append(b - 1)
         cost[a - 1].append(w)
     s, t = data[0] - 1, data[1] - 1
-    print(distance(adj, cost, s, t))
+    metric, paths = distance(adj, cost, s, t)
+    print(list(dfs_paths(paths,t,s)))
+    print(metric)
